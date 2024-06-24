@@ -6,7 +6,7 @@ class MoveFlag(Enum):
     DOUBLE_PAWN_PUSH = 1
     EN_PASSANT = 2
     CASTLE = 3
-    PROMOTE_QUEEN = 4
-    PROMOTE_ROOK = 5
-    PROMOTE_BISHOP = 6
-    PROMOTE_KNIGHT = 7
+    PROMOTE_Q = 4
+    PROMOTE_R = 5
+    PROMOTE_B = 6
+    PROMOTE_N = 7

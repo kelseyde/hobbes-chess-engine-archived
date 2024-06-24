@@ -14,54 +14,26 @@ class Move:
 
     def get_promotion_piece(self):
         match self.flag:
-            case MoveFlag.PROMOTE_QUEEN:
+            case MoveFlag.PROMOTE_Q:
                 return Piece.Q
-            case MoveFlag.PROMOTE_ROOK:
+            case MoveFlag.PROMOTE_R:
                 return Piece.R
-            case MoveFlag.PROMOTE_BISHOP:
+            case MoveFlag.PROMOTE_B:
                 return Piece.B
-            case MoveFlag.PROMOTE_KNIGHT:
+            case MoveFlag.PROMOTE_N:
                 return Piece.N
             case _:
                 return None
 
-    def to_notation(self):
+    def is_en_passant(self):
+        return self.flag == MoveFlag.EN_PASSANT
 
-        start_file = bits.file_map[Board.file(self.start_sq)]
-        start_rank = bits.rank_map[Board.rank(self.start_sq)]
-        end_file = bits.file_map[Board.file(self.end_sq)]
-        end_rank = bits.rank_map[Board.rank(self.end_sq)]
+    def is_castle(self):
+        return self.flag == MoveFlag.CASTLE
 
-        promotion_piece = self.get_promotion_piece()
-        promotion_suffix = ''
+    def is_double_pawn_push(self):
+        return self.flag == MoveFlag.DOUBLE_PAWN_PUSH
 
-        if promotion_piece:
-            promotion_suffix = promotion_piece.name.lower()
-
-        return f"{start_file}{start_rank}{end_file}{end_rank}{promotion_suffix}"
-
-    @staticmethod
-    def from_chess_notation(notation):
-        start_file = notation[0]
-        start_rank = notation[1]
-        end_file = notation[2]
-        end_rank = notation[3]
-
-        start_sq = Board.square_index(bits.file_map.index(start_file), bits.rank_map.index(start_rank))
-        end_sq = Board.square_index(bits.file_map.index(end_file), bits.rank_map.index(end_rank))
-
-        promotion_suffix = notation[4] if len(notation) > 4 else ''
-
-        if promotion_suffix == 'q':
-            flag = MoveFlag.PROMOTE_QUEEN
-        elif promotion_suffix == 'r':
-            flag = MoveFlag.PROMOTE_ROOK
-        elif promotion_suffix == 'b':
-            flag = MoveFlag.PROMOTE_BISHOP
-        elif promotion_suffix == 'n':
-            flag = MoveFlag.PROMOTE_KNIGHT
-        else:
-            flag = MoveFlag.STANDARD
-
-        return Move(start_sq, end_sq, flag)
+    def is_promotion(self):
+        return self.flag in {MoveFlag.PROMOTE_Q, MoveFlag.PROMOTE_R, MoveFlag.PROMOTE_B, MoveFlag.PROMOTE_N}
 

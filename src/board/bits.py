@@ -56,6 +56,12 @@ start_piece_list = [
 
 # Starting castle rights
 start_castle_rights = 0b1111
+clear_white_rights = 0b1100
+clear_black_rights = 0b0011
+clear_white_kingside_rights = 0b1110
+clear_white_queenside_rights = 0b1101
+clear_black_kingside_rights = 0b1011
+clear_black_queenside_rights = 0b0111
 
 file_map = 'abcdefgh'
 rank_map = '12345678'
@@ -67,5 +73,17 @@ piece_unicode = {
     (Piece.R, Colour.WHITE): '♖', (Piece.R, Colour.BLACK): '♜',
     (Piece.Q, Colour.WHITE): '♕', (Piece.Q, Colour.BLACK): '♛',
     (Piece.K, Colour.WHITE): '♔', (Piece.K, Colour.BLACK): '♚',
+}
+
+char_to_piece_map = {
+    'p': Piece.P, 'r': Piece.R, 'n': Piece.N, 'b': Piece.B, 'q': Piece.Q, 'k': Piece.K,
+    'P': Piece.P, 'R': Piece.R, 'N': Piece.N, 'B': Piece.B, 'Q': Piece.Q, 'K': Piece.K,
+}
+
+piece_to_char_map = {
+    (Piece.P, Colour.WHITE): 'P', (Piece.R, Colour.WHITE): 'R', (Piece.N, Colour.WHITE): 'N',
+    (Piece.B, Colour.WHITE): 'B', (Piece.Q, Colour.WHITE): 'Q', (Piece.K, Colour.WHITE): 'K',
+    (Piece.P, Colour.BLACK): 'p', (Piece.R, Colour.BLACK): 'r', (Piece.N, Colour.BLACK): 'n',
+    (Piece.B, Colour.BLACK): 'b', (Piece.Q, Colour.BLACK): 'q', (Piece.K, Colour.BLACK): 'k'
 }
 

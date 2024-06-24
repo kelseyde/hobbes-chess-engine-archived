@@ -21,5 +21,34 @@ def generate_key(board):
     key ^= turn_hash
     key ^= castling_rights_hash[board.game_state.castle_rights]
     if board.game_state.ep_file >= 0:
-        key ^= en_passant_hash[board.ep_square]
+        key ^= en_passant_hash[board.game_state.ep_file + 1]
     return key
+
+
+def update_key(old_key, board, move, piece, old_castle_rights, new_castle_rights, old_ep_file, new_ep_file):
+    key = old_key
+    start_sq = move.start_sq
+    end_sq = move.end_sq
+    colour = 0 if board.all_bbs[0] & (1 << start_sq) else 1
+
+    # Remove the piece from the start square
+    key ^= piece_square_hash[start_sq][colour][piece.value]
+
+    # Place the piece on the end square
+    key ^= piece_square_hash[end_sq][colour][piece.value]
+
+    # Toggle the turn
+    key ^= turn_hash
+
+    # Update castling rights
+    key ^= castling_rights_hash[old_castle_rights]
+    key ^= castling_rights_hash[new_castle_rights]
+
+    # Update en passant file
+    if old_ep_file >= 0:
+        key ^= en_passant_hash[old_ep_file]
+    if new_ep_file >= 0:
+        key ^= en_passant_hash[new_ep_file]
+
+    return key
+
