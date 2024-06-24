@@ -1,8 +1,9 @@
-import bits
-from piece import Piece
-from colour import Colour
-from move import MoveFlag
-from game_state import GameState
+import src.board.bits as bits
+import src.board.zobrist as zobrist
+from src.board.piece import Piece
+from src.board.colour import Colour
+from src.board.move_flag import MoveFlag
+from src.board.game_state import GameState
 
 
 class Board:
@@ -13,8 +14,8 @@ class Board:
         self.piece_list = bits.start_piece_list
         self.colour = Colour.WHITE
         self.move_history = []
-        # TODO: Implement game state
         self.game_state = GameState()
+        self.game_state.key = zobrist.generate_key(self)
         self.game_state_history = []
 
     def make_move(self, move):
@@ -112,6 +113,22 @@ class Board:
     def is_white(self):
         return self.colour == Colour.WHITE
 
+    def print_board(self):
+        board_str = ''
+        for rank in range(7, -1, -1):
+            for file in range(8):
+                square = self.square_index(file, rank)
+                piece = self.piece_at(square)
+                if piece is not None:
+                    colour = Colour.WHITE if self.all_bbs[0] & (1 << square) else Colour.BLACK
+                    board_str += bits.piece_unicode[(piece, colour)]
+                else:
+                    board_str += '·'
+                board_str += ' '
+            board_str += '\n'
+
+        print(board_str)
+
     @staticmethod
     def file(square):
         return square % 8
@@ -119,6 +136,18 @@ class Board:
     @staticmethod
     def rank(square):
         return square // 8
+
+    @staticmethod
+    def diagonal(square):
+        return (square % 8) - (square // 8)
+
+    @staticmethod
+    def anti_diagonal(square):
+        return (square % 8) + (square // 8)
+
+    @staticmethod
+    def square_index(file, rank):
+        return 8 * rank + file
 
 
 
