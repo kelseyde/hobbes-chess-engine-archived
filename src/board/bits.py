@@ -25,7 +25,7 @@ files = [
     0x8080808080808080
 ]
 
-# Bitboards for the starting positions of the pieces
+# Bitboards for the starting positions of the different piece types
 piece_bbs = [
     0b11111111000000000000000000000000000000001111111100000000,
     0b100001000000000000000000000000000000000000000000000000001000010,
@@ -34,12 +34,15 @@ piece_bbs = [
     0b100000000000000000000000000000000000000000000000000000001000,
     0b1000000000000000000000000000000000000000000000000000000010000
 ]
+
+# Bitboards for the starting positions of the white pieces, black pieces, and all pieces
 all_bbs = [
     0b1111111111111111,
     0b1111111111111111000000000000000000000000000000000000000000000000,
     0b1111111111111111000000000000000000000000000000001111111111111111
 ]
 
+# Piece list for the starting positions of the pieces
 start_piece_list = [
     Piece.R, Piece.N, Piece.B, Piece.Q, Piece.K, Piece.B, Piece.N, Piece.R,
     Piece.P, Piece.P, Piece.P, Piece.P, Piece.P, Piece.P, Piece.P, Piece.P,
@@ -51,6 +54,7 @@ start_piece_list = [
     Piece.R, Piece.N, Piece.B, Piece.Q, Piece.K, Piece.B, Piece.N, Piece.R,
 ]
 
+# Starting castle rights
 start_castle_rights = 0b1111
 
 file_map = 'abcdefgh'
