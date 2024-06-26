@@ -16,3 +16,12 @@ class GameState:
         self.fullmove_number = fullmove_number
         self.castle_rights = castle_rights
         self.ep_file = ep_file
+
+    def is_kingside_legal(self, colour):
+        kingside_mask = bits.white_kingside_rights if colour == bits.Colour.W else bits.black_kingside_rights
+        return self.castle_rights & kingside_mask
+
+    def is_queenside_legal(self, colour):
+        queenside_mask = bits.white_queenside_rights if colour == bits.Colour.W else bits.black_queenside_rights
+        return self.castle_rights & queenside_mask
+

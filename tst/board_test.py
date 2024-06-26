@@ -1,7 +1,7 @@
 import unittest
 
 from src.board.move_flag import MoveFlag
-from src.util.notation import fen_to_board, board_to_fen, move_to_notation, notation_to_move
+from src.util.notation import fen_to_board, board_to_fen, notation_to_move
 
 
 class BoardTest(unittest.TestCase):

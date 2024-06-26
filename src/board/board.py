@@ -1,18 +1,20 @@
+import copy
+
 import src.board.bits as bits
 import src.board.zobrist as zobrist
-from src.board.piece import Piece
 from src.board.colour import Colour
-from src.board.move_flag import MoveFlag
 from src.board.game_state import GameState
+from src.board.move_flag import MoveFlag
+from src.board.piece import Piece
 
 
 class Board:
 
     def __init__(self):
-        self.piece_bbs = bits.piece_bbs
-        self.all_bbs = bits.all_bbs
-        self.piece_list = bits.start_piece_list
-        self.colour = Colour.WHITE
+        self.piece_bbs = copy.deepcopy(bits.piece_bbs)
+        self.all_bbs = copy.deepcopy(bits.all_bbs)
+        self.piece_list = copy.deepcopy(bits.start_piece_list)
+        self.colour = Colour.W
         self.move_history = []
         self.game_state = GameState()
         self.game_state.key = zobrist.generate_key(self)
@@ -37,11 +39,11 @@ class Board:
         self.game_state_history.append(self.game_state)
         self.game_state = self.compute_game_state(move, piece, captured_piece)
         self.move_history.append(move)
-        self.colour = Colour.WHITE if self.colour == Colour.BLACK else Colour.BLACK
+        self.colour = Colour.W if self.colour == Colour.B else Colour.B
 
     def unmake_move(self):
         move = self.move_history.pop()
-        self.colour = Colour.WHITE if self.colour == Colour.BLACK else Colour.BLACK
+        self.colour = Colour.W if self.colour == Colour.B else Colour.B
         match move.flag:
             case MoveFlag.STANDARD:
                 self.unmake_standard_move(move)
@@ -68,7 +70,7 @@ class Board:
 
     def make_en_passant(self, move):
         self.toggle_squares(Piece.P, self.colour, move.start_sq, move.end_sq)
-        pawn_sq = move.end_sq - 8 if self.colour == Colour.WHITE else move.end_sq + 8
+        pawn_sq = move.end_sq - 8 if self.colour == Colour.W else move.end_sq + 8
         self.toggle_square(Piece.P, ~self.colour, pawn_sq)
 
     def make_castle(self, move):
@@ -99,7 +101,7 @@ class Board:
 
     def unmake_en_passant(self, move):
         self.toggle_squares(Piece.P, self.colour, move.end_sq, move.start_sq)
-        pawn_sq = move.end_sq - 8 if self.colour == Colour.WHITE else move.end_sq + 8
+        pawn_sq = move.end_sq - 8 if self.colour == Colour.W else move.end_sq + 8
         self.toggle_square(Piece.P, ~self.colour, pawn_sq)
 
     def unmake_castle(self, move):
@@ -121,7 +123,7 @@ class Board:
         new_halfmove_clock = 0 if captured_piece or piece == Piece.P else old_halfmove_clock + 1
 
         old_fullmove_number = self.game_state.fullmove_number
-        new_fullmove_number = old_fullmove_number + 1 if self.colour == Colour.BLACK else old_fullmove_number
+        new_fullmove_number = old_fullmove_number + 1 if self.colour == Colour.B else old_fullmove_number
 
         old_castle_rights = self.game_state.castle_rights
         new_castle_rights = self.compute_castle_rights(move, piece)
@@ -154,9 +156,9 @@ class Board:
 
     def toggle_square(self, piece, colour, square):
         mask = 1 << square
-        self.piece_bbs[piece.value] ^= mask
-        self.all_bbs[colour.value] ^= mask
-        self.all_bbs[Colour.ALL.value] ^= mask
+        self.piece_bbs[int(piece)] ^= mask
+        self.all_bbs[int(colour)] ^= mask
+        self.all_bbs[int(Colour.ALL)] ^= mask
         self.piece_list[square] = piece if self.piece_list[square] is None else None
 
     def toggle_squares(self, piece, colour, start_sq, end_sq):
@@ -168,14 +170,53 @@ class Board:
 
     def colour_at(self, square):
         if self.all_bbs[0] & (1 << square):
-            return Colour.WHITE
+            return Colour.W
         elif self.all_bbs[1] & (1 << square):
-            return Colour.BLACK
+            return Colour.B
         else:
             return None
 
     def is_white(self):
-        return self.colour == Colour.WHITE
+        return self.colour == Colour.W
+
+    def pawns(self, colour):
+        return self.piece_bbs[Piece.P.value] & self.all_bbs[colour.value]
+
+    def knights(self, colour):
+        return self.piece_bbs[Piece.N.value] & self.all_bbs[colour.value]
+
+    def bishops(self, colour):
+        return self.piece_bbs[Piece.B.value] & self.all_bbs[colour.value]
+
+    def rooks(self, colour):
+        return self.piece_bbs[Piece.R.value] & self.all_bbs[colour.value]
+
+    def queens(self, colour):
+        return self.piece_bbs[Piece.Q.value] & self.all_bbs[colour.value]
+
+    def king(self, colour):
+        return self.piece_bbs[Piece.K.value] & self.all_bbs[colour.value]
+
+    def friendlies(self, colour):
+        return self.all_bbs[int(colour)]
+
+    def opponents(self, colour):
+        return self.all_bbs[int(~colour)]
+
+    def occupied(self):
+        return self.all_bbs[int(Colour.ALL)]
+
+    def remove_king(self, colour):
+        toggle_mask = (self.piece_bbs[Piece.K.value] & self.all_bbs[colour.value])
+        self.piece_bbs[Piece.K.value] ^= toggle_mask
+        self.all_bbs[colour.value] ^= toggle_mask
+        self.all_bbs[Colour.ALL.value] ^= toggle_mask
+
+    def add_king(self, colour, square):
+        toggle_mask = 1 << square
+        self.piece_bbs[Piece.K.value] ^= toggle_mask
+        self.all_bbs[colour.value] ^= toggle_mask
+        self.all_bbs[Colour.ALL.value] ^= toggle_mask
 
     def print_board(self):
         board_str = ''
@@ -184,7 +225,7 @@ class Board:
                 square = self.square_index(file, rank)
                 piece = self.piece_at(square)
                 if piece is not None:
-                    colour = Colour.WHITE if self.all_bbs[0] & (1 << square) else Colour.BLACK
+                    colour = Colour.W if self.all_bbs[0] & (1 << square) else Colour.B
                     board_str += bits.piece_unicode[(piece, colour)]
                 else:
                     board_str += '·'
@@ -203,12 +244,16 @@ class Board:
 
     @staticmethod
     def diagonal(square):
-        return (square % 8) - (square // 8)
+        return (square % 8) + (square // 8)
 
     @staticmethod
     def anti_diagonal(square):
-        return (square % 8) + (square // 8)
+        return (square % 8) - (square // 8)
 
     @staticmethod
     def square_index(file, rank):
         return 8 * rank + file
+
+    @staticmethod
+    def is_valid_square_index(square):
+        return 0 <= square < 64

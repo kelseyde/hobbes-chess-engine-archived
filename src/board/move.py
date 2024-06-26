@@ -1,6 +1,3 @@
-import src.board.bits as bits
-
-from src.board.board import Board
 from src.board.move_flag import MoveFlag
 from src.board.piece import Piece
 

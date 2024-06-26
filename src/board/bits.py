@@ -1,5 +1,8 @@
-from src.board.piece import Piece
 from src.board.colour import Colour
+from src.board.piece import Piece
+
+all_squares = 0xFFFFFFFFFFFFFFFF
+no_squares = 0x0
 
 # Ranks 1 through 8
 ranks = [
@@ -62,17 +65,32 @@ clear_white_kingside_rights = 0b1110
 clear_white_queenside_rights = 0b1101
 clear_black_kingside_rights = 0b1011
 clear_black_queenside_rights = 0b0111
+white_kingside_rights = 0b0001
+black_kingside_rights = 0b1000
+white_queenside_rights = 0b0010
+black_queenside_rights = 0b0100
 
+white_kingside_castle_travel_mask = 0x0000000000000060
+white_queenside_castle_travel_mask = 0x000000000000000E
+black_kingside_castle_travel_mask = white_kingside_castle_travel_mask << (7 * 8)
+black_queenside_castle_travel_mask = white_queenside_castle_travel_mask << (7 * 8)
+
+white_queenside_castle_safe_mask = 0x000000000000001C
+white_kingside_castle_safe_mask = white_queenside_castle_safe_mask << 2
+black_queenside_castle_safe_mask = white_queenside_castle_safe_mask << (7 * 8)
+black_kingside_castle_safe_mask = white_queenside_castle_safe_mask << (7 * 8)
+
+# File and rank maps
 file_map = 'abcdefgh'
 rank_map = '12345678'
 
 piece_unicode = {
-    (Piece.P, Colour.WHITE): '♙', (Piece.P, Colour.BLACK): '♟',
-    (Piece.N, Colour.WHITE): '♘', (Piece.N, Colour.BLACK): '♞',
-    (Piece.B, Colour.WHITE): '♗', (Piece.B, Colour.BLACK): '♝',
-    (Piece.R, Colour.WHITE): '♖', (Piece.R, Colour.BLACK): '♜',
-    (Piece.Q, Colour.WHITE): '♕', (Piece.Q, Colour.BLACK): '♛',
-    (Piece.K, Colour.WHITE): '♔', (Piece.K, Colour.BLACK): '♚',
+    (Piece.P, Colour.W): '♙', (Piece.P, Colour.B): '♟',
+    (Piece.N, Colour.W): '♘', (Piece.N, Colour.B): '♞',
+    (Piece.B, Colour.W): '♗', (Piece.B, Colour.B): '♝',
+    (Piece.R, Colour.W): '♖', (Piece.R, Colour.B): '♜',
+    (Piece.Q, Colour.W): '♕', (Piece.Q, Colour.B): '♛',
+    (Piece.K, Colour.W): '♔', (Piece.K, Colour.B): '♚',
 }
 
 char_to_piece_map = {
@@ -81,9 +99,9 @@ char_to_piece_map = {
 }
 
 piece_to_char_map = {
-    (Piece.P, Colour.WHITE): 'P', (Piece.R, Colour.WHITE): 'R', (Piece.N, Colour.WHITE): 'N',
-    (Piece.B, Colour.WHITE): 'B', (Piece.Q, Colour.WHITE): 'Q', (Piece.K, Colour.WHITE): 'K',
-    (Piece.P, Colour.BLACK): 'p', (Piece.R, Colour.BLACK): 'r', (Piece.N, Colour.BLACK): 'n',
-    (Piece.B, Colour.BLACK): 'b', (Piece.Q, Colour.BLACK): 'q', (Piece.K, Colour.BLACK): 'k'
+    (Piece.P, Colour.W): 'P', (Piece.R, Colour.W): 'R', (Piece.N, Colour.W): 'N',
+    (Piece.B, Colour.W): 'B', (Piece.Q, Colour.W): 'Q', (Piece.K, Colour.W): 'K',
+    (Piece.P, Colour.B): 'p', (Piece.R, Colour.B): 'r', (Piece.N, Colour.B): 'n',
+    (Piece.B, Colour.B): 'b', (Piece.Q, Colour.B): 'q', (Piece.K, Colour.B): 'k'
 }
 

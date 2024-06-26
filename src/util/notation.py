@@ -1,9 +1,9 @@
 import src.board.bits as bits
 from src.board import zobrist
+from src.board.board import Board
 from src.board.colour import Colour
 from src.board.game_state import GameState
 from src.board.move import Move
-from src.board.board import Board
 from src.board.move_flag import MoveFlag
 from src.board.piece import Piece
 
@@ -89,13 +89,13 @@ def fen_to_board(fen):
             file += int(char)
         else:
             piece = bits.char_to_piece_map[char]
-            color = Colour.WHITE if char.isupper() else Colour.BLACK
+            color = Colour.W if char.isupper() else Colour.B
             square = board.square_index(file, rank)
             board.toggle_square(piece, color, square)
             file += 1
 
     # Set active color
-    board.colour = Colour.WHITE if active_color == 'w' else Colour.BLACK
+    board.colour = Colour.W if active_color == 'w' else Colour.B
 
     # Set castling rights
     board.game_state.castle_rights = 0
@@ -147,7 +147,7 @@ def board_to_fen(board: Board) -> str:
     fen_parts.append(''.join(piece_placement))
 
     # Active Color
-    fen_parts.append('w' if board.colour == Colour.WHITE else 'b')
+    fen_parts.append('w' if board.colour == Colour.W else 'b')
 
     # Castling Rights
     castling_rights = ''
@@ -166,7 +166,7 @@ def board_to_fen(board: Board) -> str:
         fen_parts.append('-')
     else:
         file = bits.file_map[board.game_state.ep_file]
-        rank = '6' if board.colour == Colour.WHITE else '3'
+        rank = '6' if board.colour == Colour.W else '3'
         fen_parts.append(file + rank)
 
     # Halfmove Clock

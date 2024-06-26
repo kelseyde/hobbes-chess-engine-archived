@@ -1,6 +1,14 @@
 from src.board.board import Board
-from src.board.move import Move
+from src.board.colour import Colour
 from src.util.notation import notation_to_move
+
+print(int(Colour.W))
+print(int(Colour.B))
+print(int(Colour.ALL))
+
+print(int(~Colour.W))
+print(int(~Colour.B))
+print(int(~Colour.ALL))
 
 board = Board()
 board.print_board()
