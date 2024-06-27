@@ -78,7 +78,7 @@ black_queenside_castle_travel_mask = white_queenside_castle_travel_mask << (7 * 
 white_queenside_castle_safe_mask = 0x000000000000001C
 white_kingside_castle_safe_mask = white_queenside_castle_safe_mask << 2
 black_queenside_castle_safe_mask = white_queenside_castle_safe_mask << (7 * 8)
-black_kingside_castle_safe_mask = white_queenside_castle_safe_mask << (7 * 8)
+black_kingside_castle_safe_mask = white_kingside_castle_safe_mask << (7 * 8)
 
 # File and rank maps
 file_map = 'abcdefgh'
