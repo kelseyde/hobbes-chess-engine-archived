@@ -321,8 +321,10 @@ class MoveGenerator:
         return attack_mask & ~friendlies
 
     def promotion_moves(self, start_sq, end_sq):
-        return [Move(start_sq, end_sq, MoveFlag.PROMOTE_Q), Move(start_sq, end_sq, MoveFlag.PROMOTE_R),
-                Move(start_sq, end_sq, MoveFlag.PROMOTE_B), Move(start_sq, end_sq, MoveFlag.PROMOTE_N)]
+        return [Move(start_sq, end_sq, MoveFlag.PROMOTE_Q),
+                Move(start_sq, end_sq, MoveFlag.PROMOTE_R),
+                Move(start_sq, end_sq, MoveFlag.PROMOTE_B),
+                Move(start_sq, end_sq, MoveFlag.PROMOTE_N)]
 
     def is_pinned(self, sq):
         return 1 << sq & self.pin_mask

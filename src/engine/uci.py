@@ -22,6 +22,7 @@ class UCI:
         print("readyok")
 
     def ucinewgame(self):
+        self.search = Search()
         self.board = Board()
 
     def position(self, command):
