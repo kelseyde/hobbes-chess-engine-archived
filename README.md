@@ -2,6 +2,8 @@
 
 # <div align="center"> Hobbes </div>
 
+*** N.B. This project has been abandoned because, one of the first things I learned after starting to write a chess engine in Python, is that Python is slow as hell. ***
+
 Hobbes is a work-in-progress chess engine written in Python.
 
 It is the sequel to my other chess engine, [Calvin](https://github.com/kelseyde/calvin-chess-engine).
